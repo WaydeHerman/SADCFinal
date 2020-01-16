@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<meta name=”viewport” content=”width=device-width, initial-scale=1.0">
+<head>
+  <link
+    rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+  />
+</head>
+<style type="text/css">
+  @media screen and (max-width: 600px) {
+    .column {
+      width: 100%;
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .container{
+        max-width: 800px;
+    }
+}
+
+    .column {
+        flex: 50%;
+    }
+
+    * {
+        margin: 0px;
+        padding: 0px;
+    }
+
+    .section-heading {
+        background-color: #78c96a;
+        color: #004d23;
+        width: 22em;
+        padding-left: 0.5em;
+        padding-top: 0.2em;
+        padding-bottom: 0.01em;
+        margin-bottom: 3em;
+    }
+
+    .share {
+        width: 16em;
+    }
+
+    .page-heading {
+        width: 28em;
+        padding-left: 2em;
+    }
+
+    .letter-spacing-15 {
+        letter-spacing: 0.15em;
+    }
+
+    .col-centered {
+        float: none;
+        margin: 0 auto;
+    }
+
+    .section-centered {
+        align-items: center;
+    }
+
+    .margin-bot-10 {
+        margin-bottom: 6em;
+    }
+
+    footer a {
+        text-decoration: none;
+        background-color: #78c96a;
+        color: white;
+        display: block;
+        float: left;
+        clear: both;
+        padding: .2em;
+        padding-left: 1em;
+        width: 16em;
+        cursor: pointer;
+    }
+
+    footer a:not([href]) {
+        color: white;
+    }
+
+    footer {
+        padding-bottom: 3em;
+    }
+
+    .end {
+        height: 2em;
+    }
+</style>
+<body>
+  <header id="header" class="header">
+    <div class="container"></div>
+  </header>
+
+  <main>
+    <div id="visualization">
+      <div class="container">
+        <div class="section-heading page-heading">
+            <h5 class="letter-spacing-15">SADC Parliamentary Forum</h5>
+            <h3>Diversity in SADC Parliaments</h3>
+          </div>
+        <div class="section">
+          <div class="col-xs-12 margin-bot-10" id="data-viz"></div>
+        </div>
+      </div>
+    </div>
+    <div class="content text-left">
+      <div class="container">
+          <div class="section-heading">
+            <h4>About the joint initiative</h4>
+          </div>
+          <div class="row margin-bot-10">
+            <div class="col-sm-6">
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+                accumsan rhoncus hendrerit. Fusce varius quam ultrices,
+                venenatis metus sed, placerat nisi. Maecenas bibendum molestie
+                porta. Etiam congue mi id neque tempus semper. Duis blandit
+                purus ligula, sit amet dapibus orci accumsan id. Aliquam
+                pulvinar cursus urna quis tincidunt. Sed luctus, ipsum vel
+                convallis suscipit, tellus felis efficitur felis, sit amet
+                aliquet ex risus nec lectus. Ut finibus metus vel urna
+                consectetur tincidunt. Praesent in gravida elit. </br></br>Vestibulum sed
+                faucibus neque. Nullam eros odio, dictum et dapibus quis,
+                suscipit nec sem. In venenatis ipsum ac libero varius vehicula.
+                Curabitur placerat nibh eu fermentum pharetra. Donec aliquam
+                tortor non elit iaculis, in euismod dolor feugiat. In pretium
+                odio vel nisl sollicitudin, ut tempor erat hendrerit. In ut
+                fringilla felis. Morbi lacus ipsum, placerat vitae porta a,
+                finibus non leo. Etiam at turpis elementum, tempus mauris ac,
+                pulvinar quam. Nulla at lacinia felis. Maecenas commodo lacus in
+                ullamcorper lobortis.
+              </p>
+            </div>
+            <div class="col-sm-6">
+              <p>
+                Etiam ac nunc nunc. Nunc eu efficitur velit. Pellentesque tempor cursus pulvinar. Morbi hendrerit purus ut tellus hendrerit, ac dapibus nisl dictum. Suspendisse tempus venenatis sem ac luctus. Praesent pellentesque massa dolor. Integer tristique arcu sed ex sodales, nec malesuada est mollis. Nulla mollis lacinia elit eget mattis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vivamus euismod mi et mauris cursus rhoncus. Fusce in faucibus tellus, ut ullamcorper tortor. Pellentesque sem sapien, convallis vel augue ut, fermentum volutpat justo. Proin lectus dui, feugiat quis sodales sed, commodo rutrum purus. Praesent nulla mi, varius nec est vel, ornare sagittis leo. Nam sed magna eleifend, auctor nibh eu, blandit mauris. Phasellus tempus at ipsum sit amet vestibulum.
+              </p>
+            </div>
+          </div>
+      </div>
+    </div>
+  </main>
+  <footer>
+      <div class="container">
+            <div class="section-heading share">
+            <h4>Share</h4>
+          </div>
+          <a class="twitter">Share on Twitter</a>
+          <a class="facebook">Share on Facebook</a>
+          <a class="mail">Share on email</a>
+          <div class="end margin-bot-10"></div>
+      </div>
+  </footer>
+
+  <script src="https://d3js.org/d3.v5.js"></script>
+  <script>
+      // Dummy Visualization:
+    var initialWidth = 700,
+    initialHeight = 700,
+        barHeight = 600 / 2 - 80;
+    var legendRectSize = 30,
+        legendSpacing = 1;
+
+        function responsivefy(svg) {
+            // get container + svg aspect ratio
+            var container = d3.select(svg.node().parentNode),
+              width = parseInt(svg.style("width")),
+              height = parseInt(svg.style("height")),
+              aspect = width / height;
+    
+            // add viewBox and preserveAspectRatio properties,
+            // and call resize so that svg resizes on inital page load
+            svg
+              .attr("viewBox", "0 0 " + width + " " + height)
+              .attr("perserveAspectRatio", "xMinYMid")
+              .call(resize);
+    
+            // to register multiple listeners for same event type,
+            // you need to add namespace, i.e., 'click.foo'
+            // necessary if you call invoke this function for multiple svgs
+            // api docs: https://github.com/mbostock/d3/wiki/Selections#on
+            d3.select(window).on("resize." + container.attr("id"), resize);
+    
+            // get width of container and resize svg to fit it
+            function resize() {
+              var targetWidth = parseInt(container.style("width"));
+              svg.attr("width", targetWidth);
+              svg.attr("height", Math.round(targetWidth / aspect));
+            }
+          }
+
+    var svg = d3.select('#data-viz').append("svg")
+        .attr("width", initialWidth)
+        .attr("height", initialHeight)
+        .call(responsivefy);
+
+    var chart = svg.append("g")
+        .attr("transform", "translate(" + (initialWidth/2 - 80) + "," + (initialHeight/2 - 50 )+ ")")
+    chart.append("circle")
+        .attr("r", barHeight*1.15)
+        .classed("outer", true)
+        .style("fill", "none")
+        .style("stroke", "black")
+        .style("stroke-width","1.5px");
+    var dummydata = [0,1,2,3,4,5,6,7,8,9,10,11,12,13]
+    var legend = chart.selectAll('.legend')
+        .data(dummydata)
+        .enter()
+        .append('g')
+        .attr('class', 'legend') 
+        .attr('transform', function(d, i) {                   
+            var height = legendRectSize + legendSpacing;   
+            var offset =  height * dummydata.length / 2;
+            var horz = 12.5 * legendRectSize;
+            var vert = i * height - offset;             
+            return 'translate(' + horz + ',' + vert + ')';    
+        });
+    legend.append('rect')                                
+        .attr('width', legendRectSize)                       
+        .attr('height', legendRectSize-10)     
+        .style("fill", "none")
+        .style("stroke", "black")
+        .style("stroke-width","1.5px");  
+    chart.append('rect')                                
+        .attr('width', 360)                       
+        .attr('height', 20)    
+        .attr("y", 310) 
+        .attr("x", -180)
+        .style("fill", "none")
+        .style("stroke", "black")
+        .style("stroke-width","1.5px");   
+    chart.append('rect')                                
+        .attr('width', 440)                       
+        .attr('height', 26)    
+        .attr("y", 350) 
+        .attr("x", -220)
+        .style("fill", "none")
+        .style("stroke", "black")
+        .style("stroke-width","1.5px");             
+
+  </script>
+</body>

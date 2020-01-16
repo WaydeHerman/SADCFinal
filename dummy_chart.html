@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+    <style type="text/css">
+    </style>       
+<body>
+
+        <div id="Visualisation"></div>
+
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script>
+    // define data
+        var width = 800,
+        height = 700,
+        barHeight = 600 / 2 - 80;
+
+    // legend dimensions
+    var legendRectSize = 30,
+        legendSpacing = 1;
+
+    var svg = d3.select('#Visualisation').append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", "translate(" + (width/2 - 140) + "," + (height/2 - 50 )+ ")");
+
+    // this is the light green circle.
+    svg.append("circle")
+        .attr("r", barHeight*1.15)
+        .classed("outer", true)
+        .style("fill", "none")
+        .style("stroke", "black")
+        .style("stroke-width","1.5px");
+
+    var dummydata = [0,1,2,3,4,5,6,7,8,9,10,11,12,13]
+    // define legend
+        var legend = svg.selectAll('.legend')
+            .data(dummydata)
+            .enter()
+            .append('g')
+            .attr('class', 'legend') 
+            .attr('transform', function(d, i) {                   
+                var height = legendRectSize + legendSpacing;   
+                var offset =  height * dummydata.length / 2;
+                var horz = 12.5 * legendRectSize;
+                var vert = i * height - offset;             
+                return 'translate(' + horz + ',' + vert + ')';    
+            });
+
+    legend.append('rect')                                
+        .attr('width', legendRectSize)                       
+        .attr('height', legendRectSize-10)     
+        .style("fill", "none")
+        .style("stroke", "black")
+        .style("stroke-width","1.5px");  
+
+    svg.append('rect')                                
+        .attr('width', 360)                       
+        .attr('height', 20)    
+        .attr("y", 310) 
+        .attr("x", -180)
+        .style("fill", "none")
+        .style("stroke", "black")
+        .style("stroke-width","1.5px");   
+
+    svg.append('rect')                                
+        .attr('width', 440)                       
+        .attr('height', 26)    
+        .attr("y", 350) 
+        .attr("x", -220)
+        .style("fill", "none")
+        .style("stroke", "black")
+        .style("stroke-width","1.5px");             
+
+    // Create a function that takes a dataset as input and update the plot:
+    
+
+
+
+
+
+
+
+</script>
