@@ -8,30 +8,37 @@
   />
 </head>
 <style type="text/css">
- 
-@media (min-width: 768px) {
-  body {
-    font-size: 2rem;
-  }
-  h1 {
-      font-size: 1.3rem;
-  }
-  h2 {
-      font-size: 1.2rem;
-  }
-}
-
-@media (min-width: 991px) {
+  @media (max-width: 991px) {
     body {
     font-size: 1.2rem;
   }
-  h1 {
-      font-size: 1.5rem;
-  }
-  h2 {
-      font-size: 1.4rem;
-  }
+  h5 {
+    font-size: 1.3rem;
 }
+h4 {
+  font-size: 1.5rem;
+}
+h3 {
+  font-size: 1.75rem;
+}
+}
+
+@media (max-width: 768px) {
+  body {
+    font-size: 1.8rem;
+  }
+  h5 {
+    font-size: 1.8rem;
+}
+h4 {
+  font-size: 2rem;
+}
+h3 {
+  font-size: 2.2rem;
+}
+}
+
+
 
 
   @media screen and (max-width: 600px) {
@@ -55,14 +62,17 @@
         padding: 0px;
     }
 
-    .section-heading {
+    .heading {
         background-color: #78c96a;
         color: #004d23;
-        width: 24rem;
         padding-left: 0.5em;
         padding-top: 0.2em;
         padding-bottom: 0.01em;
         margin-bottom: 3em;
+    }
+
+    .section-heading {
+      width: 22rem;
     }
 
     .share {
@@ -70,8 +80,11 @@
     }
 
     .page-heading {
-        width: 36rem;
-        padding-left: 2em;
+      width: 24rem;
+        padding-left: 2rem;
+        padding-right: 2rem;
+        box-sizing: content-box;
+
     }
 
     .letter-spacing-15 {
@@ -124,7 +137,7 @@
   <main>
     <div id="visualization">
       <div class="container">
-        <div class="section-heading page-heading">
+        <div class="heading page-heading">
             <h5 class="letter-spacing-15">SADC Parliamentary Forum</h5>
             <h3>Diversity in SADC Parliaments</h3>
           </div>
@@ -135,7 +148,7 @@
     </div>
     <div class="content text-left">
       <div class="container">
-          <div class="section-heading">
+          <div class="heading section-heading">
             <h4>About the joint initiative</h4>
           </div>
           <div class="row margin-bot-10">
@@ -172,7 +185,7 @@
   </main>
   <footer>
       <div class="container">
-            <div class="section-heading share">
+            <div class="heading section-heading share">
             <h4>Share</h4>
           </div>
           <a class="twitter">Share on Twitter</a>
