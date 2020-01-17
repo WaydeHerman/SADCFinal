@@ -6,6 +6,7 @@
     rel="stylesheet"
     href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
   />
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
 </head>
 <style type="text/css">
   @media (max-width: 991px) {
@@ -25,16 +26,18 @@ h3 {
 
 @media (max-width: 768px) {
   body {
-    font-size: 1.8rem;
+    font-size: 1.2rem;
+    padding: 1em;
   }
+
   h5 {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
 }
 h4 {
-  font-size: 2rem;
+  font-size: 1.4rem;
 }
 h3 {
-  font-size: 2.2rem;
+  font-size: 1.8rem;
 }
 }
 
@@ -53,6 +56,10 @@ h3 {
     }
   }
 
+  body {
+    font-family: 'Open Sans', sans-serif;
+  }
+
     .column {
         flex: 50%;
     }
@@ -69,20 +76,13 @@ h3 {
         padding-top: 0.2em;
         padding-bottom: 0.01em;
         margin-bottom: 3em;
-    }
-
-    .section-heading {
-      width: 24rem;
-    }
-
-    .share {
-        width: 20rem;
+        max-width: 100%
     }
 
     .page-heading {
       width: 24rem;
-        padding-left: 2rem;
-        padding-right: 2rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
         box-sizing: content-box;
 
     }
@@ -113,9 +113,10 @@ h3 {
         clear: both;
         padding: .2em;
         padding-left: 1em;
-        width: 16em;
+        padding-right: 1em;
         cursor: pointer;
     }
+
 
     footer a:not([href]) {
         color: white;
@@ -128,6 +129,45 @@ h3 {
     .end {
         height: 2em;
     }
+
+    .viz-btn {
+        background-color: #004C24;
+        color: white;
+        padding: 0.5em 1.6em;
+        margin-bottom: 6rem;
+        font-size: 0.8em;
+        border: none;
+        cursor: pointer;
+        border-radius: 2em; 
+        outline: 0 none;
+        margin-top: 1em;
+        line-height: 1.5em;
+        margin-right: 1em;
+        text-align: center;
+        vertical-align: middle;
+        opacity: 1;
+        text-decoration: none;
+    }
+
+    .viz-btn:hover {
+      opacity: 0.8;
+      color: white;
+    }
+
+    a, a:hover{
+      text-decoration: none;
+    }
+
+    .button-container {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+  }
+
+  .inline-class {
+    display: inline-block;
+  }
 </style>
 <body>
   <header id="header" class="header">
@@ -138,18 +178,24 @@ h3 {
     <div id="visualization">
       <div class="container">
         <div class="heading page-heading">
-            <h5 class="letter-spacing-15">SADC Parliamentary Forum</h5>
-            <h3>Diversity in SADC Parliaments</h3>
+            <h5 class="letter-spacing-15 font-weight-bold">SADC Parliamentary Forum</h5>
+            <h3 class="font-weight-bold">Diversity in SADC Parliaments</h3>
           </div>
         <div class="section">
-          <div class="col-xs-12 margin-bot-10" id="data-viz"></div>
+          <div class="col-xs-12" id="data-viz"></div>
+          <div class="button-container">
+            <button class="btn btn-default viz-btn" id="female-toggle">Woman in Parliament</button>
+            <button class="btn btn-default viz-btn" id="youth-toggle">Youth in Parliament</button>
+            <button class="btn btn-default viz-btn" id="age-groups-toggle">Age Groups in Parliament</button>
+            <a class="btn btn-default viz-btn" href="" role="button" download>Download Data</a>
+          </div>
         </div>
       </div>
     </div>
     <div class="content text-left">
       <div class="container">
           <div class="heading section-heading">
-            <h4>About the joint initiative</h4>
+            <h4 class="font-weight-bold inline-class">About the joint initiative</h4>
           </div>
           <div class="row margin-bot-10">
             <div class="col-lg-6">
@@ -186,7 +232,7 @@ h3 {
   <footer>
       <div class="container">
             <div class="heading section-heading share">
-            <h4>Share</h4>
+            <h4 class="font-weight-bold">Share</h4>
           </div>
           <!-- NEED to sort out: -->
           <a class="twitter" href=https://twitter.com/intent/tweet?text=Hello%20world target="popup">Share on Twitter</a>
@@ -201,7 +247,7 @@ h3 {
   <script>
       // Dummy Visualization:
     var initialWidth = 700,
-    initialHeight = 700,
+    initialHeight = 600,
         barHeight = 600 / 2 - 80;
     var legendRectSize = 30,
         legendSpacing = 1;
@@ -240,7 +286,7 @@ h3 {
         .call(responsivefy);
 
     var chart = svg.append("g")
-        .attr("transform", "translate(" + (initialWidth/2 - 80) + "," + (initialHeight/2 - 50 )+ ")")
+        .attr("transform", "translate(" + (initialWidth/2 - 80) + "," + (initialHeight/2 - 40)+ ")")
     chart.append("circle")
         .attr("r", barHeight*1.15)
         .classed("outer", true)
@@ -267,21 +313,21 @@ h3 {
         .style("stroke", "black")
         .style("stroke-width","1.5px");  
     chart.append('rect')                                
-        .attr('width', 360)                       
+        .attr('width', 400)                       
         .attr('height', 20)    
-        .attr("y", 310) 
-        .attr("x", -180)
+        .attr("y", 300) 
+        .attr("x", -120)
         .style("fill", "none")
         .style("stroke", "black")
         .style("stroke-width","1.5px");   
-    chart.append('rect')                                
+    /*chart.append('rect')                                
         .attr('width', 440)                       
         .attr('height', 26)    
         .attr("y", 350) 
         .attr("x", -220)
         .style("fill", "none")
         .style("stroke", "black")
-        .style("stroke-width","1.5px");             
+        .style("stroke-width","1.5px");*/        
 
   </script>
 </body>
