@@ -56,8 +56,22 @@ h3 {
     }
   }
 
+
   body {
     font-family: 'Open Sans', sans-serif;
+    background: url('assets/Women3.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+  }
+
+  .bg-overlay {
+    background-color: rgba(255, 255, 255, 0.8);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
   }
 
     .column {
@@ -75,16 +89,19 @@ h3 {
         padding-left: 0.5em;
         padding-top: 0.2em;
         padding-bottom: 0.01em;
-        margin-bottom: 3em;
-        max-width: 100%
+        margin-bottom: 3.5em;
     }
 
     .page-heading {
-      width: 24rem;
+      width: 100%;
         padding-left: 0.5rem;
         padding-right: 0.5rem;
         box-sizing: content-box;
 
+    }
+
+    .section-heading {
+      width: 100%
     }
 
     .letter-spacing-15 {
@@ -117,9 +134,10 @@ h3 {
         cursor: pointer;
     }
 
-
+    footer a:hover,
     footer a:not([href]) {
         color: white;
+        text-decoration: none;
     }
 
     footer {
@@ -147,6 +165,7 @@ h3 {
         vertical-align: middle;
         opacity: 1;
         text-decoration: none;
+        font-weight: bold;
     }
 
     .viz-btn:hover {
@@ -170,6 +189,7 @@ h3 {
   }
 </style>
 <body>
+  <div class="bg-overlay">
   <header id="header" class="header">
     <div class="container"></div>
   </header>
@@ -236,21 +256,22 @@ h3 {
           </div>
           <!-- NEED to sort out: -->
           <a class="twitter" href=https://twitter.com/intent/tweet?text=Hello%20world target="popup">Share on Twitter</a>
-          <a class="facebook">Share on Facebook</a>
+          <a class="facebook" href="x">Share on Facebook</a>
           <!-- NEED to sort out: use this site: https://e-mailer.link/en/ -->
           <a class="mail" href="mailto:?subject=Have%20you%20seen%20this%20SADC%20data%20viz%3F&body=Have%20a%20look%20at%20this%20awesome%20data%20viz%20by%20the%20SADC%3A%0A%0Awww.awesomedataviz.com">Share on email</a>
           <div class="end margin-bot-10"></div>
       </div>
   </footer>
+</div>
 
   <script src="https://d3js.org/d3.v5.js"></script>
   <script>
       // Dummy Visualization:
     var initialWidth = 700,
-    initialHeight = 600,
-        barHeight = 600 / 2 - 80;
+    initialHeight = 660, // 800
+        barHeight = 470 / 2; // barHeight = 500 / 2;
     var legendRectSize = 30,
-        legendSpacing = 1;
+        legendSpacing = 10;
 
         function responsivefy(svg) {
             // get container + svg aspect ratio
@@ -286,37 +307,66 @@ h3 {
         .call(responsivefy);
 
     var chart = svg.append("g")
-        .attr("transform", "translate(" + (initialWidth/2 - 80) + "," + (initialHeight/2 - 40)+ ")")
-    chart.append("circle")
+        .attr("transform", "translate(" + (initialWidth/2) + "," + (initialHeight/2 - 57)+ ")") // -110
+    /*chart.append("circle")
         .attr("r", barHeight*1.15)
         .classed("outer", true)
         .style("fill", "none")
         .style("stroke", "black")
-        .style("stroke-width","1.5px");
-    var dummydata = [0,1,2,3,4,5,6,7,8,9,10,11,12,13]
+        .style("stroke-width","1.5px");*/
+    chart.append("image")
+          .attr("href", "dummy-chart-image.png")
+          .attr("width", barHeight*1.15*2)
+          .attr("x", -barHeight*1.15)
+          .attr("y", -barHeight*1.15)
+    var dummydata = ['Angola', 'Botswana', 'DRC', 'Eswatini', 'Lesotho', 'Malawi',
+                    'Mauritius', 'Mozambique', 'Namibia', 'Seychelles', 'South_Africa',
+                    'Tanzania', 'Zambia', 'Zimbabwe']
     var legend = chart.selectAll('.legend')
         .data(dummydata)
         .enter()
         .append('g')
         .attr('class', 'legend') 
-        .attr('transform', function(d, i) {                   
-            var height = legendRectSize + legendSpacing;   
-            var offset =  height * dummydata.length / 2;
-            var horz = 12.5 * legendRectSize;
-            var vert = i * height - offset;             
+        .attr('transform', function(d, i) {
+          var height = legendRectSize + legendSpacing;  
+          var offset =  -height * dummydata.length/2
+              var horz = i * height + offset;  
+              var vert = 300 // 320
             return 'translate(' + horz + ',' + vert + ')';    
         });
-    legend.append('rect')                                
+        /*.attr('transform', function(d, i) {
+          var height = legendRectSize + legendSpacing;  
+          var offset =  -height * dummydata.length/4
+            if (i < dummydata.length/2) {
+              var horz = 350;
+              var vert = i * height + offset;   
+            } else {
+              var horz = 350 + height + legendSpacing
+              var vert = (i - dummydata.length/2) * height + offset;   
+            }      
+            return 'translate(' + horz + ',' + vert + ')';    
+        });*/
+    /*legend.append('rect')                                
         .attr('width', legendRectSize)                       
         .attr('height', legendRectSize-10)     
         .style("fill", "none")
         .style("stroke", "black")
-        .style("stroke-width","1.5px");  
+        .style("stroke-width","1.5px");*/
+      /*legend.append('circle')                                
+        .attr('r', 16)                         
+        .style("fill", "none")
+        .style("stroke", "black")
+        .style("stroke-width","1.5px");*/
+        legend.append("image")
+          .attr("href", function(d) {
+            return 'assets/flags/' + d + '.png'
+          })
+          .attr("width", 30)
     chart.append('rect')                                
         .attr('width', 400)                       
         .attr('height', 20)    
-        .attr("y", 300) 
-        .attr("x", -120)
+        .attr("y", 355) // 375
+        .attr("x", -200)
         .style("fill", "none")
         .style("stroke", "black")
         .style("stroke-width","1.5px");   
