@@ -42,9 +42,6 @@ h3 {
 }
 }
 
-
-
-
   @media screen and (max-width: 600px) {
     .column {
       width: 100%;
@@ -221,8 +218,174 @@ h3 {
     width: 6em;
   }
 
-  .legend-image {
+    /* 
+
+  Data Viz Styling:
+
+  */
+
+  .country-labels {
+    text-anchor: middle;
+    font-weight: bold;
+    font-size: 11px;
+    fill: #004c24;
+    stroke-width: 0.25px;
+    stroke: #004c24;
+  }
+
+  .title-text {
+    text-anchor: middle;
+    fill: white;
+  }
+
+  /* legend */
+  image.disabled {
+    opacity: 0.4 !important;
+  }
+
+  /* slider */
+  .step-button {
+    opacity: 0.8;
     cursor: pointer;
+  }
+
+  .step-button:hover {
+    opacity: 1;
+  }
+
+  .slider-label {
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    stroke: #004c24;
+    stroke-width: 0.2px;
+  }
+
+  .slider {
+    -webkit-appearance: none;
+    display: inline-block;
+    width: 244px;
+    height: 4px;
+    border-radius: 2px;
+    background: #d3d3d3;
+    margin: 0 auto;
+    outline: none;
+    opacity: 0.8;
+    -webkit-transition: 0.2s;
+    transition: opacity 0.2s;
+  }
+
+  /* Mouse-over effects */
+  .slider:hover {
+    opacity: 1; /* Fully shown on mouse-over */
+  }
+
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 8px;
+    height: 16px;
+    border-radius: 35%;
+    background: #004c24;
+    cursor: pointer;
+  }
+
+  .slider::-moz-range-thumb {
+    width: 8px;
+    height: 16px;
+    border-radius: 35%;
+    background: #004c24;
+    cursor: pointer;
+  }
+
+  .track,
+  .track-inset,
+  .track-overlay {
+  }
+
+  .slider {
+    stroke: #d3d3d3;
+  }
+
+  .track-inset {
+    stroke: #ffee00;
+    stroke-width: 3px;
+  }
+
+  .track-overlay {
+    pointer-events: stroke;
+    stroke-width: 6px;
+    stroke: transparent;
+    cursor: pointer;
+  }
+
+  .handle {
+    fill: #79c86d;
+    stroke: #000;
+    stroke-opacity: 0.5;
+    stroke-width: 0px;
+  }
+
+  .threshold-radio-button {
+    fill: white;
+    stroke: #004c24;
+    stroke-width: 3px;
+    cursor: pointer;
+    width: 1em;
+  }
+
+  .threshold-radio-button-text {
+    font-weight: bold;
+    font-size: 12px;
+    fill: #004c24;
+  }
+
+  #age-group-key-container {
+    text-align: center;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    font-weight: bold;
+    fill: #004c24;
+    width: 100%;
+  }
+  .age-group-key {
+    font-size: 0.8em;
+    text-align: center;
+    padding: 0.5em 2.6em;
+    border-width: 4px;
+    border-radius: 0px;
+  }
+
+  .key-a {
+    border-bottom: #80b6b5;
+    border-bottom-style: solid;
+    margin-right: 1em;
+  }
+
+  .key-b {
+    border-bottom: #51877c;
+    border-bottom-style: solid;
+    margin-right: 1em;
+  }
+
+  .key-c {
+    border-bottom: #025f53;
+    border-bottom-style: solid;
+    margin-right: 1em;
+  }
+
+  .key-d {
+    border-bottom: #57a745;
+    border-bottom-style: solid;
+  }
+
+  .segment-mouse-over {
+    text-anchor: middle;
+    font-weight: bold;
+    fill: #004c24;
+    stroke: #004c24;
+    stroke-width: 0.3px;
+    pointer-events: none;
   }
 
 
@@ -253,12 +416,30 @@ h3 {
     <div id="visualization">
       <div class="container">
         <div class="section">
+          <div id="age-group-key-container">
+            <text class="age-group-key key-a">Ages -30</text>
+            <text class="age-group-key key-b">Ages 31-40</text>
+            <text class="age-group-key key-c">Ages 41-50</text>
+            <text class="age-group-key key-d">Ages 51+</text>
+          </div>
           <div class="col-xs-12" id="data-viz"></div>
           <div class="button-container">
-            <button class="btn btn-default viz-btn" id="female-toggle">Woman in Parliament</button>
-            <button class="btn btn-default viz-btn" id="youth-toggle">Youth in Parliament</button>
-            <button class="btn btn-default viz-btn" id="age-groups-toggle">Age Groups in Parliament</button>
-            <a class="btn btn-default viz-btn" href="" role="button" download>Download Data</a>
+            <button class="btn btn-default viz-btn" id="women-toggle">
+              Women in Parliament
+            </button>
+            <button class="btn btn-default viz-btn" id="youth-toggle">
+              Youth in Parliament
+            </button>
+            <button class="btn btn-default viz-btn" id="age-groups-toggle">
+              Age Groups in Parliament
+            </button>
+            <a
+              class="btn btn-default viz-btn"
+              href="Reports SADC Parliamentary Forum - Diversity Form_dummy data_all countries - dropped cols.csv"
+              role="button"
+              download
+              >Download Data</a
+            >
           </div>
         </div>
       </div>
@@ -328,12 +509,76 @@ h3 {
 
   <script src="https://d3js.org/d3.v5.js"></script>
   <script>
-      // Dummy Visualization:
-    var initialWidth = 700,
-    initialHeight = 660, // 800
-        barHeight = 470 / 2; // barHeight = 500 / 2;
-    var legendRectSize = 30,
-        legendSpacing = 10;
+    /* 
+    Data Viz constants:
+    */
+    var dataFilePath =
+        "Reports SADC Parliamentary Forum - Diversity Form_dummy data_all countries - dropped cols.csv",
+      flagFilePath = "assets/flags/",
+      initialWidth = 700,
+      initialHeight = 660,
+      barHeight = 470 / 2,
+      tmp_barHeight = 245,
+      labelRadius = tmp_barHeight + 15,
+      inner_radius = 70,
+      barMin = inner_radius,
+      arc_label_spacing = 0.3,
+      lineWidth = 1,
+      outerStroke = 2,
+      legendRectSize = 30,
+      legendSpacing = 10,
+      yearConstant = 864e5;
+
+      var today = new Date();
+
+      var age_split = [
+        { name: "0-30", lower: 0, higher: 30 },
+        { name: "31-40", lower: 31, higher: 40 },
+        { name: "41-50", lower: 41, higher: 50 },
+        { name: "51+", lower: 51, higher: 120 }
+      ];
+  
+      var age_thresholds = [30, 35, 40];
+  
+      // set starting global variables:
+      var mode = "women";
+      var age_threshold = age_thresholds[0];
+
+          // colors for each country:
+    var countryColor = d3
+    .scaleOrdinal()
+    .domain([
+      "Angola",
+      "Botswana",
+      "DRC",
+      "Eswatini",
+      "Lesotho",
+      "Malawi",
+      "Mauritius",
+      "Mozambique",
+      "Namibia",
+      "Seychelles",
+      "South Africa",
+      "Tanzania",
+      "Zambia",
+      "Zimbabwe"
+    ])
+    .range([
+      "#007536",
+      "#81AF69",
+      "#005E2F",
+      "#A0C519",
+      "#89BB24",
+      "#00A970",
+      "#485B23",
+      "#5D7C2B",
+      "#009C8B",
+      "#009D75",
+      "#00A6E6",
+      "#008E3E",
+      "#A7C714",
+      "#009640"
+    ]);
 
         function responsivefy(svg) {
             // get container + svg aspect ratio
@@ -363,84 +608,1549 @@ h3 {
             }
           }
 
+          function convertBirthDate(entry) {
+            var dateString = entry.split(".");
+            return dateString[2] + "-" + dateString[1] + "-" + dateString[0];
+          }
+      
+          function convertTime(entry) {
+            // Function to convert time of format 'YY.MM.DD HH:MM or YY.MM.DD' to YYYY-MM-DD.
+            // (UTC date format which is timezone agnostic)
+            if (entry.length > 10) {
+              var dateString = entry.split(" ")[0].split(".");
+            } else {
+              var dateString = entry.split(".");
+            }
+      
+            return "20" + dateString[2] + "-" + dateString[1] + "-" + dateString[0];
+          }
+      
+          var formatNumber = d3.format("s");
+      
+          function isEnabled(d) {
+            return d.enabled == true;
+          }
+
+          var barScale = d3
+          .scaleLinear()
+          .domain([0, 1])
+          .range([barMin, tmp_barHeight]);
+    
+        var x = d3
+          .scaleLinear()
+          .domain([0, 1])
+          .range([barMin, -tmp_barHeight]);
+
     var svg = d3.select('#data-viz').append("svg")
         .attr("width", initialWidth)
         .attr("height", initialHeight)
         .call(responsivefy);
 
-    var chart = svg.append("g")
-        .attr("transform", "translate(" + (initialWidth/2) + "," + (initialHeight/2 - 57)+ ")") // -110
-    /*chart.append("circle")
-        .attr("r", barHeight*1.15)
-        .classed("outer", true)
-        .style("fill", "none")
-        .style("stroke", "black")
-        .style("stroke-width","1.5px");*/
-    chart.append("image")
-          .attr("href", "dummy-chart-image.png")
-          .attr("width", barHeight*1.15*2)
-          .attr("x", -barHeight*1.15)
-          .attr("y", -barHeight*1.15)
-    var dummydata = ['Angola', 'Botswana', 'DRC', 'Eswatini', 'Lesotho', 'Malawi',
-                    'Mauritius', 'Mozambique', 'Namibia', 'Seychelles', 'South_Africa',
-                    'Tanzania', 'Zambia', 'Zimbabwe']
-    var legend = chart.selectAll('.legend')
-        .data(dummydata)
-        .enter()
-        .append('g')
-        .attr('class', 'legend') 
-        .attr('transform', function(d, i) {
-          var height = legendRectSize + legendSpacing;  
-          var offset =  -height * dummydata.length/2
-              var horz = i * height + offset;  
-              var vert = 300 // 320
-            return 'translate(' + horz + ',' + vert + ')';    
-        });
-        /*.attr('transform', function(d, i) {
-          var height = legendRectSize + legendSpacing;  
-          var offset =  -height * dummydata.length/4
-            if (i < dummydata.length/2) {
-              var horz = 350;
-              var vert = i * height + offset;   
+        var chart = svg
+        .append("g")
+        .attr(
+          "transform",
+          "translate(" + initialWidth / 2 + "," + (initialHeight / 2 - 57) + ")"
+        );
+
+        d3.csv(dataFilePath).then(function(data) {
+          /*
+    
+          Preprocessing data:
+            - drop null entries
+            - Get start, end dates and age.
+            - Populate new array with statistics for each chart type
+           
+          */
+    
+          data = data.filter(function(d) {
+            return d["Gender"] !== "" && d["Parliament Name"] !== "";
+          });
+    
+          data.forEach(function(d) {
+            d.startDate = convertTime(d["D I P S"]);
+            d.endDate = convertTime(d["E O P T"]);
+            d.age = Math.floor(
+              (today - new Date(convertBirthDate(d["Date of Birth"]))) /
+                (yearConstant * 365)
+            );
+            if (d.age < 0) {
+              d.age = 0;
+            }
+            if (d["Parliament Name"] === "National Assembly of South Africa") {
+              d["Parliament Name"] = "South Africa";
             } else {
-              var horz = 350 + height + legendSpacing
-              var vert = (i - dummydata.length/2) * height + offset;   
-            }      
-            return 'translate(' + horz + ',' + vert + ')';    
-        });*/
-    /*legend.append('rect')                                
-        .attr('width', legendRectSize)                       
-        .attr('height', legendRectSize-10)     
-        .style("fill", "none")
-        .style("stroke", "black")
-        .style("stroke-width","1.5px");*/
-      /*legend.append('circle')                                
-        .attr('r', 16)                         
-        .style("fill", "none")
-        .style("stroke", "black")
-        .style("stroke-width","1.5px");*/
-        legend.append("image")
-          .attr("href", function(d) {
-            return 'assets/flags/' + d + '.png'
-          })
-          .attr("width", 30)
-          .attr("class", "legend-image")
-    chart.append('rect')                                
-        .attr('width', 400)                       
-        .attr('height', 20)    
-        .attr("y", 355) // 375
-        .attr("x", -200)
-        .style("fill", "none")
-        .style("stroke", "black")
-        .style("stroke-width","1.5px");   
-    /*chart.append('rect')                                
-        .attr('width', 440)                       
-        .attr('height', 26)    
-        .attr("y", 350) 
-        .attr("x", -220)
-        .style("fill", "none")
-        .style("stroke", "black")
-        .style("stroke-width","1.5px");*/        
+              d["Parliament Name"] = d["Parliament Name"].split(" ")[
+                d["Parliament Name"].split(" ").length - 1
+              ];
+            }
+            // fix for error in data:
+            if (d["Parliament Name"] === "Botsana") {
+              d["Parliament Name"] = "Mozambique";
+            }
+            d.activeYears = [];
+            for (
+              let i = 0;
+              i <=
+              new Date(d.endDate).getUTCFullYear() -
+                new Date(d.startDate).getUTCFullYear() -
+                1;
+              i++
+            ) {
+              d.activeYears.push(new Date(d.startDate).getUTCFullYear() + i);
+            }
+          });
+    
+          console.log(data);
+    
+          var max_years_per_country = d3
+            .nest()
+            .key(function(d) {
+              return d["Parliament Name"];
+            })
+            .rollup(function(v) {
+              return d3.max(v, function(d) {
+                return new Date(d.endDate).getUTCFullYear();
+              });
+            })
+            .entries(data);
+    
+          var min_year = d3.min(data, function(d) {
+            return new Date(d.startDate).getUTCFullYear();
+          });
+    
+          var max_year = d3.max(data, function(d) {
+            return new Date(d.endDate).getUTCFullYear();
+          });
+    
+          // needs work:
+          var year_range = [];
+          for (let i = 0; i <= max_year - min_year; i++) {
+            year_range.push(min_year + i);
+          }
+    
+          // need to fix age bug.
+          // need to double check threshold and split calculations (which include gender?)
+          var country = [];
+          var results = [];
+          data.forEach(function(d) {
+            if (country.indexOf(d["Parliament Name"]) < 0) {
+              var tmp_object = { country: d["Parliament Name"] };
+              year_range.forEach(function(u) {
+                tmp_object[u] = {};
+                tmp_object[u].women = 0;
+                tmp_object[u].total = 0;
+                age_thresholds.forEach(function(v) {
+                  tmp_object[u][v] = 0;
+                });
+                age_split.forEach(function(v) {
+                  tmp_object[u][v["name"]] = 0;
+                });
+              });
+              results.push(tmp_object);
+              country.push(d["Parliament Name"]);
+            }
+            results.forEach(function(u) {
+              if (u.country === d["Parliament Name"]) {
+                d.activeYears.forEach(function(v) {
+                  u[v].total += 1;
+                  age_split.forEach(function(w) {
+                    if (d.age >= w.lower && d.age <= w.higher) {
+                      u[v][w.name] += 1;
+                    }
+                  });
+                });
+                if (d.Gender === "Female") {
+                  d.activeYears.forEach(function(v) {
+                    u[v].women += 1;
+                    /*age_split.forEach(function(w) {
+                      if (d.age >= w.lower && d.age <= w.higher) {
+                        u[v][w.name] += 1;
+                      }
+                    });*/
+                  });
+                }
+                age_thresholds.forEach(function(v) {
+                  if (d.age <= v) {
+                    d.activeYears.forEach(function(w) {
+                      u[w][v] += 1;
+                    });
+                  }
+                });
+              }
+            });
+          });
+    
+          results.forEach(function(d) {
+            d.enabled = true;
+            d.hasData = true;
+            d.flagPath = flagFilePath + d.country.replace(/ /g, "_") + ".png";
+          });
+    
+          // sort alphabetically:
+          results.sort(function(a, b) {
+            if (a.country < b.country) {
+              return -1;
+            }
+            if (a.country > b.country) {
+              return 1;
+            }
+          });
+    
+          var numBars = max_years_per_country.length;
+    
+          console.log(results);
+    
+          console.log(year_range);
+          console.log("min_year", min_year);
+          console.log("max_year", max_year);
+    
+          /*
+    
+          Base Chart:
+            - plot initial chart
+           
+          */
+    
+          // Green 'background':
+          chart
+            .append("circle")
+            .attr("r", tmp_barHeight)
+            .classed("outer", true)
+            .style("fill", "#B3D27C")
+            .style("stroke", "none")
+            .style("stroke-width", "1.5px");
+    
+          // dashed 'axis':
+          var circles = chart
+            .selectAll("circle")
+            .data(x.ticks(4))
+            .enter()
+            .append("circle")
+            .attr("r", function(d) {
+              return barScale(d);
+            })
+            .style("fill", "none")
+            .style("stroke", "#FFEE00")
+            .style("stroke-dasharray", "2,2")
+            .style("stroke-width", "0.5px");
+    
+          var arc_label = d3
+            .arc()
+            .innerRadius(tmp_barHeight)
+            .outerRadius(tmp_barHeight + 10)
+            .startAngle(function(d) {
+              return d.startAngleLabel;
+            })
+            .endAngle(function(d) {
+              return d.endAngleLabel;
+            });
+    
+          var segments_label = chart
+            .selectAll("segment_label")
+            .data(results)
+            .enter()
+            .append("path")
+            .each(function(d, i) {
+              d.startAngleLabel = (i * 2 * Math.PI + arc_label_spacing) / numBars;
+            })
+            .each(function(d, i) {
+              d.endAngleLabel =
+                ((i + 1) * 2 * Math.PI - arc_label_spacing) / numBars;
+            })
+            .style("fill", function(d) {
+              return countryColor(d.country);
+            })
+            .style("fill-opacity", 1)
+            .attr("class", "segment_label")
+            .attr("id", function(d) {
+              return "segment_label" + d.country.replace(/ /g, "-");
+            })
+            .attr("d", arc_label);
+    
+          chart
+            .append("circle")
+            .attr("r", tmp_barHeight)
+            .classed("outer", true)
+            .style("fill", "none")
+            .style("stroke", "white")
+            .style("stroke-width", outerStroke);
+    
+          var labels = chart.append("g").classed("labels", true);
+    
+          labels
+            .append("def")
+            .append("path")
+            .attr("id", "label-path")
+            .attr(
+              "d",
+              "m0 " +
+                -labelRadius +
+                " a" +
+                labelRadius +
+                " " +
+                labelRadius +
+                " 0 1,1 -0.01 0"
+            );
+    
+          labels
+            .selectAll("text")
+            .data(results)
+            .enter()
+            .append("text")
+            .attr("class", "country-labels")
+            .append("textPath")
+            .attr("xlink:href", "#label-path")
+            .attr("startOffset", function(d, i) {
+              return (i * 100) / numBars + 50 / numBars + "%";
+            })
+            .text(function(d) {
+              return d.country.toUpperCase();
+            });
+    
+          var arc = d3.arc().innerRadius(inner_radius);
+    
+          var hoverArc = d3
+            .arc()
+            .innerRadius(inner_radius)
+            .outerRadius(tmp_barHeight)
+            .startAngle(function(d) {
+              return d.startAngleHover;
+            })
+            .endAngle(function(d) {
+              return d.endAngleHover;
+            });
+    
+          var ageGroupAArc = d3
+            .arc()
+            .innerRadius(inner_radius)
+            .outerRadius(function(d) {
+              return d.outerRadius_A;
+            })
+            .startAngle(function(d) {
+              return d.startAngleA;
+            })
+            .endAngle(function(d) {
+              return d.endAngleA;
+            });
+    
+          var ageGroupBArc = d3
+            .arc()
+            .innerRadius(function(d) {
+              return d.outerRadius_A;
+            })
+            .outerRadius(function(d) {
+              return d.outerRadius_B;
+            })
+            .startAngle(function(d) {
+              return d.startAngleB;
+            })
+            .endAngle(function(d) {
+              return d.endAngleB;
+            });
+    
+          var ageGroupCArc = d3
+            .arc()
+            .innerRadius(function(d) {
+              return d.outerRadius_B;
+            })
+            .outerRadius(function(d) {
+              return d.outerRadius_C;
+            })
+            .startAngle(function(d) {
+              return d.startAngleC;
+            })
+            .endAngle(function(d) {
+              return d.endAngleC;
+            });
+    
+          var ageGroupDArc = d3
+            .arc()
+            .innerRadius(function(d) {
+              return d.outerRadius_C;
+            })
+            .outerRadius(function(d) {
+              return d.outerRadius_D;
+            })
+            .startAngle(function(d) {
+              return d.startAngleD;
+            })
+            .endAngle(function(d) {
+              return d.endAngleD;
+            });
+    
+          var segments = chart
+            .selectAll("arc")
+            .data(results)
+            .enter()
+            .append("path")
+            .each(function(d) {
+              d.outerRadius = inner_radius;
+            })
+            .each(function(d, i) {
+              d.startAngle = (i * 2 * Math.PI) / numBars;
+            })
+            .each(function(d, i) {
+              d.endAngle = ((i + 1) * 2 * Math.PI) / numBars;
+            })
+            .style("fill", function(d) {
+              return countryColor(d.country);
+            })
+            .attr("d", arc);
+    
+          var ageGroupASegments = chart
+            .selectAll("arc")
+            .data(results)
+            .enter()
+            .append("path")
+            .each(function(d) {
+              d.outerRadius_A = inner_radius;
+            })
+            .each(function(d, i) {
+              d.startAngleA = (i * 2 * Math.PI) / numBars;
+            })
+            .each(function(d, i) {
+              d.endAngleA = ((i + 1) * 2 * Math.PI) / numBars;
+            })
+            .style("fill", "#80B6B5")
+            .attr("d", ageGroupAArc);
+    
+          var ageGroupBSegments = chart
+            .selectAll("arc")
+            .data(results)
+            .enter()
+            .append("path")
+            .each(function(d) {
+              d.outerRadius_B = inner_radius;
+            })
+            .each(function(d, i) {
+              d.startAngleB = (i * 2 * Math.PI) / numBars;
+            })
+            .each(function(d, i) {
+              d.endAngleB = ((i + 1) * 2 * Math.PI) / numBars;
+            })
+            .style("fill", "#51877C")
+            .attr("d", ageGroupBArc);
+    
+          var ageGroupCSegments = chart
+            .selectAll("arc")
+            .data(results)
+            .enter()
+            .append("path")
+            .each(function(d) {
+              d.outerRadius_C = inner_radius;
+            })
+            .each(function(d, i) {
+              d.startAngleC = (i * 2 * Math.PI) / numBars;
+            })
+            .each(function(d, i) {
+              d.endAngleC = ((i + 1) * 2 * Math.PI) / numBars;
+            })
+            .style("fill", "#025F53")
+            .attr("d", ageGroupCArc);
+    
+          var ageGroupDSegments = chart
+            .selectAll("arc")
+            .data(results)
+            .enter()
+            .append("path")
+            .each(function(d) {
+              d.outerRadius_D = inner_radius;
+            })
+            .each(function(d, i) {
+              d.startAngleD = (i * 2 * Math.PI) / numBars;
+            })
+            .each(function(d, i) {
+              d.endAngleD = ((i + 1) * 2 * Math.PI) / numBars;
+            })
+            .style("fill", "#57A745")
+            .attr("d", ageGroupDArc);
+    
+          var lines = chart
+            .selectAll("line")
+            .data(results)
+            .enter()
+            .append("line")
+            .attr("y2", -tmp_barHeight + outerStroke)
+            .style("stroke", "#FFEE00")
+            .style("stroke-width", lineWidth)
+            .attr("transform", function(d, i) {
+              return "rotate(" + (i * 360) / numBars + ")";
+            });
+    
+          chart
+            .append("circle")
+            .attr("r", inner_radius)
+            .classed("outer", true)
+            .style("fill", "#004C24")
+            .style("stroke", "#FFEE00")
+            .style("stroke-width", "1px");
+    
+          var hoverSegments = chart
+            .selectAll("hover-arc")
+            .data(results)
+            .enter()
+            .append("path")
+            .each(function(d, i) {
+              d.startAngleHover = (i * 2 * Math.PI) / numBars;
+            })
+            .each(function(d, i) {
+              d.endAngleHover = ((i + 1) * 2 * Math.PI) / numBars;
+            })
+            .style("fill", "#CBD8AD")
+            .attr("id", "hover-arc")
+            .style("fill-opacity", 0)
+            .style("stroke", "#FFEE00")
+            .style("stroke-width", "0.5px")
+            .on("mouseover", segmentMouseOver)
+            .on("mouseout", segmentMouseOut)
+            .attr("d", hoverArc);
+    
+          var title = chart.append("g");
+    
+          var charTitle = title
+            .append("text")
+            .attr("class", "title-text")
+            .attr("dy", "-1.0em")
+            .style("font-size", "16px")
+            .text("Women in");
+    
+          title
+            .append("text")
+            .attr("class", "title-text")
+            .attr("dy", "0.25em")
+            .style("font-size", "16px")
+            .text("Parliament");
+    
+          var yearTitle = title
+            .append("text")
+            .attr("class", "title-text")
+            .attr("dy", "1.45em")
+            .style("font-weight", "bold")
+            .style("font-size", "20px")
+            .style("stroke", "white")
+            .style("stroke-width", "0.25px")
+            .text(min_year);
+    
+          var legend = chart
+            .selectAll(".legend")
+            .data(results)
+            .enter()
+            .append("g")
+            .attr("class", "legend")
+            .attr("transform", function(d, i) {
+              var height = legendRectSize + legendSpacing;
+              var offset = (-height * results.length) / 2;
+              var horz = i * height + offset;
+              var vert = 300;
+              return "translate(" + horz + "," + vert + ")";
+            });
+    
+          legend
+            .append("image")
+            .attr("xlink:href", function(d) {
+              return d.flagPath;
+            })
+            .attr("width", 30)
+            .attr("id", function(d) {
+              return "label-" + d.country.replace(/ /g, "-");
+            })
+            .style("cursor", "pointer")
+            .on("click", function(d) {
+              var legendFlag = d3.select(this);
+              var enabled = true;
+              var totalEnabled = d3.sum(
+                results.map(function(d) {
+                  return d.enabled ? 1 : 0;
+                })
+              );
+              if (legendFlag.attr("class") === "disabled") {
+                legendFlag.attr("class", "");
+              } else {
+                if (totalEnabled < 3) return;
+                legendFlag.attr("class", "disabled");
+                enabled = false;
+              }
+              if (
+                "label-" + d.country.replace(/ /g, "-") ===
+                legendFlag.attr("id")
+              ) {
+                d.enabled = enabled;
+              }
+              update_country();
+            });
+    
+          // Slider:
+          var currentValue = min_year;
+    
+          var sliderSVG = svg
+            .append("g")
+            .attr("id", "slider-svg")
+            .style(
+              "transform",
+              "translate(" +
+                initialWidth / 2 +
+                "px," +
+                (tmp_barHeight * 2 + 150) +
+                "px)"
+            );
+    
+          /* var playButton = sliderSVG
+            .append("path")
+            .attr("id", "play-button")
+            .attr("class", "step-button")
+            .attr("d", "M10 10 L10 28 L28 20 Z")
+            .style("fill", "#004C24")
+            .attr("transform", "translate(" + -271 + "," + -20 + ")");
+    
+          var backButton = sliderSVG
+            .append("path")
+            .attr("id", "back-button")
+            .attr("class", "step-button")
+            .attr("d", "M0 10 L0 28 L-18 20 Z")
+            .style("fill", "#004C24")
+            .attr("transform", "translate(" + -271 + "," + -20 + ")"); */
+    
+          sliderSVG
+            .append("g")
+            .append("text")
+            .text(min_year)
+            .attr("class", "slider-label")
+            .attr("dx", "-17.4rem")
+            .attr("dy", "0.25em")
+            .style("fill", "#004C24");
+    
+          sliderSVG
+            .append("g")
+            .append("text")
+            .text(max_year)
+            .attr("class", "slider-label")
+            .attr("dx", "15.1rem")
+            .attr("dy", "0.25em")
+            .style("fill", "#004C24");
+    
+          var sliderX = d3
+            .scaleLinear()
+            .domain([min_year, max_year])
+            .range([-240, 220])
+            .clamp(true);
+    
+          var slider = sliderSVG.append("g").attr("class", "slider");
+    
+          slider
+            .append("line")
+            .attr("class", "track")
+            .attr("x1", sliderX.range()[0])
+            .attr("x2", sliderX.range()[1] + 8)
+            .select(function() {
+              return this.parentNode.appendChild(this.cloneNode(true));
+            })
+            .attr("class", "track-inset")
+            .select(function() {
+              return this.parentNode.appendChild(this.cloneNode(true));
+            })
+            .attr("class", "track-overlay")
+            .call(
+              d3
+                .drag()
+                .on("start.interrupt", function() {
+                  slider.interrupt();
+                })
+                .on("start drag", function() {
+                  currentValue = Math.round(sliderX.invert(d3.event.x));
+                  update_year(currentValue);
+                })
+            );
+    
+          var handle = slider
+            .insert("rect", ".track-overlay")
+            .attr("class", "handle")
+            .attr("y", "-8")
+            .attr("x", sliderX(min_year))
+            .attr("width", "3px")
+            .attr("height", "16px");
+    
+          var womenButton = d3.select("#women-toggle").on("click", function() {
+            if (mode !== "women") {
+              mode = "women";
+              update_chart_type();
+            }
+          });
+    
+          var youthButton = d3.select("#youth-toggle").on("click", function() {
+            if (mode !== "youth") {
+              mode = "youth";
+              update_chart_type();
+            }
+          });
+    
+          var ageGroupButton = d3
+            .select("#age-groups-toggle")
+            .on("click", function() {
+              if (mode !== "age groups") {
+                mode = "age groups";
+                update_chart_type();
+              }
+            });
+    
+          thresholdSVG = svg
+            .append("g")
+            .attr("id", "threshold-svg")
+            .attr("transform", "translate(" + initialWidth / 2 + "," + 650 + ")")
+            .style("display", "none");
+    
+          thresholdSVG
+            .append("circle")
+            .attr("cx", "-80")
+            .attr("cy", 0)
+            .attr("r", 6)
+            .style("fill", "#004C24")
+            .attr("class", "threshold-radio-button")
+            .attr("id", "option-a")
+            .on("click", function() {
+              d3.select(this).style("fill", "#004C24");
+              d3.select("#option-b").style("fill", "white");
+              d3.select("#option-c").style("fill", "white");
+              age_threshold = 30;
+              update_year(globalYear);
+            });
+    
+          thresholdSVG
+            .append("text")
+            .attr("x", "-68")
+            .attr("dy", "0.4em")
+            .attr("class", "threshold-radio-button-text")
+            .attr("id", "option-a-text")
+            .text("30");
+    
+          thresholdSVG
+            .append("circle")
+            .attr("cx", "-10")
+            .attr("cy", 0)
+            .attr("r", 6)
+            .attr("class", "threshold-radio-button")
+            .attr("id", "option-b")
+            .on("click", function() {
+              d3.select(this).style("fill", "#004C24");
+              d3.select("#option-a").style("fill", "white");
+              d3.select("#option-c").style("fill", "white");
+              age_threshold = 35;
+              update_year(globalYear);
+            });
+    
+          thresholdSVG
+            .append("text")
+            .attr("x", "2")
+            .attr("dy", "0.4em")
+            .attr("class", "threshold-radio-button-text")
+            .attr("id", "option-b-text")
+            .text("35");
+    
+          thresholdSVG
+            .append("circle")
+            .attr("cx", "60")
+            .attr("cy", 0)
+            .attr("r", 6)
+            .attr("class", "threshold-radio-button")
+            .attr("id", "option-c")
+            .on("click", function() {
+              d3.select(this).style("fill", "#004C24");
+              d3.select("#option-a").style("fill", "white");
+              d3.select("#option-b").style("fill", "white");
+              age_threshold = 40;
+              update_year(globalYear);
+            });
+    
+          thresholdSVG
+            .append("text")
+            .attr("x", "72")
+            .attr("dy", "0.4em")
+            .attr("class", "threshold-radio-button-text")
+            .attr("id", "option-c-text")
+            .text("40");
+    
+          d3.select("#age-group-key-container").style("display", "none");
+    
+          function update_country() {
+            resultsEnabled = results.filter(isEnabled);
+    
+            var keysEnabled = resultsEnabled.map(function(d) {
+              return d.country;
+            });
+    
+            var numBarsEnabled = keysEnabled.length;
+    
+            //var labels_update = chart.selectAll("text").data(results);
+    
+            var index_Line = 0;
+            lines
+              .transition("lineRotate")
+              .delay(250)
+              .duration(750)
+              .attr("transform", function(d) {
+                if (d.enabled == true) {
+                  index_Line += 1;
+                  return (
+                    "rotate(" + ((index_Line - 1) * 360) / numBarsEnabled + ")"
+                  );
+                } else {
+                  return "rotate(" + (index_Line * 360) / numBarsEnabled + ")";
+                }
+              });
+    
+            var index_Segment = 0;
+            segments
+              .enter()
+              .append("path")
+              .merge(segments)
+              .transition("SegmentReshape")
+              .delay(250)
+              .duration(750)
+              .attrTween("d", function(d, index) {
+                if (d.enabled == true) {
+                  index_Segment += 1;
+                  var o = d3.interpolate(
+                    d.startAngle,
+                    ((index_Segment - 1) * 2 * Math.PI) / numBarsEnabled
+                  );
+                  var a = d3.interpolate(
+                    d.endAngle,
+                    (index_Segment * 2 * Math.PI) / numBarsEnabled
+                  );
+                  return function(t) {
+                    d.startAngle = o(t);
+                    d.endAngle = a(t);
+                    return arc(d, index);
+                  };
+                } else {
+                  var disabledStart =
+                    (index_Segment * 2 * Math.PI) / numBarsEnabled;
+                  var disabledEnd = disabledStart;
+                  var o = d3.interpolate(d.startAngle, disabledStart);
+                  var a = d3.interpolate(d.endAngle, disabledEnd);
+                  return function(t) {
+                    d.startAngle = o(t);
+                    d.endAngle = a(t);
+                    return arc(d, index);
+                  };
+                }
+              });
+    
+            var index_segmentA = 0;
+            ageGroupASegments
+              .enter()
+              .append("path")
+              .merge(ageGroupASegments)
+              .transition("segmentAReshape")
+              .delay(250)
+              .duration(750)
+              .attrTween("d", function(d, index) {
+                if (d.enabled == true) {
+                  index_segmentA += 1;
+                  var o = d3.interpolate(
+                    d.startAngleA,
+                    ((index_segmentA - 1) * 2 * Math.PI) / numBarsEnabled
+                  );
+                  var a = d3.interpolate(
+                    d.endAngleA,
+                    (index_segmentA * 2 * Math.PI) / numBarsEnabled
+                  );
+                  return function(t) {
+                    d.startAngleA = o(t);
+                    d.endAngleA = a(t);
+                    return ageGroupAArc(d, index);
+                  };
+                } else {
+                  var disabledStart =
+                    (index_segmentA * 2 * Math.PI) / numBarsEnabled;
+                  var disabledEnd = disabledStart;
+                  var o = d3.interpolate(d.startAngleA, disabledStart);
+                  var a = d3.interpolate(d.endAngleA, disabledEnd);
+                  return function(t) {
+                    d.startAngleA = o(t);
+                    d.endAngleA = a(t);
+                    return ageGroupAArc(d, index);
+                  };
+                }
+              });
+    
+            var index_segmentB = 0;
+            ageGroupBSegments
+              .enter()
+              .append("path")
+              .merge(ageGroupBSegments)
+              .transition("segmentBReshape")
+              .delay(250)
+              .duration(750)
+              .attrTween("d", function(d, index) {
+                if (d.enabled == true) {
+                  index_segmentB += 1;
+                  var o = d3.interpolate(
+                    d.startAngleB,
+                    ((index_segmentB - 1) * 2 * Math.PI) / numBarsEnabled
+                  );
+                  var a = d3.interpolate(
+                    d.endAngleB,
+                    (index_segmentB * 2 * Math.PI) / numBarsEnabled
+                  );
+                  return function(t) {
+                    d.startAngleB = o(t);
+                    d.endAngleB = a(t);
+                    return ageGroupBArc(d, index);
+                  };
+                } else {
+                  var disabledStart =
+                    (index_segmentB * 2 * Math.PI) / numBarsEnabled;
+                  var disabledEnd = disabledStart;
+                  var o = d3.interpolate(d.startAngleB, disabledStart);
+                  var a = d3.interpolate(d.endAngleB, disabledEnd);
+                  return function(t) {
+                    d.startAngleB = o(t);
+                    d.endAngleB = a(t);
+                    return ageGroupBArc(d, index);
+                  };
+                }
+              });
+    
+            var index_segmentC = 0;
+            ageGroupCSegments
+              .enter()
+              .append("path")
+              .merge(ageGroupCSegments)
+              .transition("segmentCReshape")
+              .delay(250)
+              .duration(750)
+              .attrTween("d", function(d, index) {
+                if (d.enabled == true) {
+                  index_segmentC += 1;
+                  var o = d3.interpolate(
+                    d.startAngleC,
+                    ((index_segmentC - 1) * 2 * Math.PI) / numBarsEnabled
+                  );
+                  var a = d3.interpolate(
+                    d.endAngleC,
+                    (index_segmentC * 2 * Math.PI) / numBarsEnabled
+                  );
+                  return function(t) {
+                    d.startAngleC = o(t);
+                    d.endAngleC = a(t);
+                    return ageGroupCArc(d, index);
+                  };
+                } else {
+                  var disabledStart =
+                    (index_segmentC * 2 * Math.PI) / numBarsEnabled;
+                  var disabledEnd = disabledStart;
+                  var o = d3.interpolate(d.startAngleC, disabledStart);
+                  var a = d3.interpolate(d.endAngleC, disabledEnd);
+                  return function(t) {
+                    d.startAngleC = o(t);
+                    d.endAngleC = a(t);
+                    return ageGroupCArc(d, index);
+                  };
+                }
+              });
+    
+            var index_segmentD = 0;
+            ageGroupDSegments
+              .enter()
+              .append("path")
+              .merge(ageGroupDSegments)
+              .transition("segmentDReshape")
+              .delay(250)
+              .duration(750)
+              .attrTween("d", function(d, index) {
+                if (d.enabled == true) {
+                  index_segmentD += 1;
+                  var o = d3.interpolate(
+                    d.startAngleD,
+                    ((index_segmentD - 1) * 2 * Math.PI) / numBarsEnabled
+                  );
+                  var a = d3.interpolate(
+                    d.endAngleD,
+                    (index_segmentD * 2 * Math.PI) / numBarsEnabled
+                  );
+                  return function(t) {
+                    d.startAngleD = o(t);
+                    d.endAngleD = a(t);
+                    return ageGroupDArc(d, index);
+                  };
+                } else {
+                  var disabledStart =
+                    (index_segmentD * 2 * Math.PI) / numBarsEnabled;
+                  var disabledEnd = disabledStart;
+                  var o = d3.interpolate(d.startAngleD, disabledStart);
+                  var a = d3.interpolate(d.endAngleD, disabledEnd);
+                  return function(t) {
+                    d.startAngleD = o(t);
+                    d.endAngleD = a(t);
+                    return ageGroupDArc(d, index);
+                  };
+                }
+              });
+    
+            var index_HoverSegment = 0;
+            hoverSegments
+              .enter()
+              .append("path")
+              .merge(hoverSegments)
+              .transition("hoverSegmentReshape")
+              .delay(250)
+              .duration(750)
+              .attrTween("d", function(d, index) {
+                if (d.enabled == true) {
+                  index_HoverSegment += 1;
+                  var o = d3.interpolate(
+                    d.startAngleHover,
+                    ((index_HoverSegment - 1) * 2 * Math.PI) / numBarsEnabled
+                  );
+                  var a = d3.interpolate(
+                    d.endAngleHover,
+                    (index_HoverSegment * 2 * Math.PI) / numBarsEnabled
+                  );
+                  return function(t) {
+                    d.startAngleHover = o(t);
+                    d.endAngleHover = a(t);
+                    return hoverArc(d, index);
+                  };
+                } else {
+                  var disabledStart =
+                    (index_HoverSegment * 2 * Math.PI) / numBarsEnabled;
+                  var disabledEnd = disabledStart;
+                  var o = d3.interpolate(d.startAngleHover, disabledStart);
+                  var a = d3.interpolate(d.endAngleHover, disabledEnd);
+                  return function(t) {
+                    d.startAngleHover = o(t);
+                    d.endAngleHover = a(t);
+                    return hoverArc(d, index);
+                  };
+                }
+              });
+    
+            var index_SegmentsLabel = 0;
+            segments_label
+              .enter()
+              .append("path")
+              .merge(segments_label)
+              .transition("segmentLabelReshape")
+              .delay(250)
+              .duration(750)
+              .attrTween("d", function(d, index) {
+                if (d.enabled == true) {
+                  index_SegmentsLabel += 1;
+                  var o = d3.interpolate(
+                    d.startAngleLabel,
+                    ((index_SegmentsLabel - 1) * 2 * Math.PI + arc_label_spacing) /
+                      numBarsEnabled
+                  );
+                  var a = d3.interpolate(
+                    d.endAngleLabel,
+                    ((index_SegmentsLabel - 1 + 1) * 2 * Math.PI -
+                      arc_label_spacing) /
+                      numBarsEnabled
+                  );
+                  return function(t) {
+                    d.startAngleLabel = o(t);
+                    d.endAngleLabel = a(t);
+                    return arc_label(d, index);
+                  };
+                } else {
+                  var disabledStart =
+                    (index_SegmentsLabel * 2 * Math.PI) / numBarsEnabled;
+                  var disabledEnd = disabledStart;
+                  var o = d3.interpolate(d.startAngleLabel, disabledStart);
+                  var a = d3.interpolate(d.endAngleLabel, disabledEnd);
+                  return function(t) {
+                    d.startAngleLabel = o(t);
+                    d.endAngleLabel = a(t);
+                    return arc_label(d, index);
+                  };
+                }
+              });
+    
+            var labels_update = chart
+              .selectAll("text")
+              .data(results)
+              .transition("labelUpdate")
+              .delay(250)
+              .duration(1000)
+              .style("opacity", function(d, i) {
+                if (d.enabled == true) {
+                  return 1;
+                } else {
+                  return 0;
+                }
+              });
+    
+            var index_LabelPaths = 0;
+            var labelPaths = chart
+              .selectAll("textPath")
+              .data(results)
+              .transition("labelPathUpdate")
+              .delay(250)
+              .duration(1000)
+              .attr("startOffset", function(d, i) {
+                if (d.enabled == true) {
+                  index_LabelPaths += 1;
+                  return (
+                    ((index_LabelPaths - 1) * 100) / numBarsEnabled +
+                    50 / numBarsEnabled +
+                    "%"
+                  );
+                } else {
+                  return (
+                    ((index_LabelPaths - 1) * 100) / numBarsEnabled +
+                    50 / numBarsEnabled +
+                    "%"
+                  );
+                }
+              });
+          }
+    
+          function update_year(selectedYear) {
+            globalYear = selectedYear;
+    
+            handle.attr("x", function() {
+              return sliderX(selectedYear);
+            });
+    
+            segments
+              .transition("segmentDataUpdate")
+              .ease(d3.easeLinear)
+              .duration(500)
+              .delay(function(d, i) {
+                return (12 - i) * 100;
+              })
+              .attrTween("d", function(d, index) {
+                if (d[globalYear].total === 0) {
+                  d[globalYear].women_percentage = 0;
+                  d[globalYear].age_percentage = 0;
+                } else {
+                  d[globalYear].women_percentage =
+                    d[globalYear].women / d[globalYear].total;
+                  d[globalYear].age_percentage =
+                    d[globalYear][age_threshold] / d[globalYear].total;
+                }
+                if (mode === "women") {
+                  var i = d3.interpolate(
+                    d.outerRadius,
+                    barScale(d[globalYear].women_percentage)
+                  );
+                }
+                if (mode === "youth") {
+                  var i = d3.interpolate(
+                    d.outerRadius,
+                    barScale(d[globalYear].age_percentage)
+                  );
+                }
+                if (mode === "age groups") {
+                  var i = d3.interpolate(d.outerRadius, barScale(0));
+                }
+    
+                return function(t) {
+                  d.outerRadius = i(t);
+                  return arc(d, index);
+                };
+              });
+    
+            ageGroupASegments
+              .transition("ageGroupASegmentDataUpdate")
+              .ease(d3.easeLinear)
+              .duration(500)
+              .delay(function(d, i) {
+                return (12 - i) * 100;
+              })
+              .attrTween("d", function(d, index) {
+                if (d[globalYear].total === 0) {
+                  d[globalYear]["0-30_percentage"] = 0;
+                } else {
+                  d[globalYear]["0-30_percentage"] =
+                    d[globalYear][age_split[0].name] / d[globalYear].total;
+                }
+                if (mode === "age groups") {
+                  var i = d3.interpolate(
+                    d.outerRadius_A,
+                    barScale(d[globalYear]["0-30_percentage"])
+                  );
+                } else {
+                  var i = d3.interpolate(d.outerRadius_A, barScale(0));
+                }
+                return function(t) {
+                  d.outerRadius_A = i(t);
+                  return ageGroupAArc(d, index);
+                };
+              });
+    
+            ageGroupBSegments
+              .transition("ageGroupBSegmentDataUpdate")
+              .ease(d3.easeLinear)
+              .duration(500)
+              .delay(function(d, i) {
+                return (12 - i) * 100;
+              })
+              .attrTween("d", function(d, index) {
+                if (d[globalYear].total === 0) {
+                  d[globalYear]["0-30_percentage"] = 0;
+                  d[globalYear]["31-40_percentage"] = 0;
+                } else {
+                  d[globalYear]["31-40_percentage"] =
+                    d[globalYear][age_split[1].name] / d[globalYear].total;
+                  d[globalYear]["0-30_percentage"] =
+                    d[globalYear][age_split[0].name] / d[globalYear].total;
+                }
+                if (mode === "age groups") {
+                  var i = d3.interpolate(
+                    d.outerRadius_B,
+                    barScale(
+                      d[globalYear]["0-30_percentage"] +
+                        d[globalYear]["31-40_percentage"]
+                    )
+                  );
+                } else {
+                  var i = d3.interpolate(d.outerRadius_B, barScale(0));
+                }
+                return function(t) {
+                  d.outerRadius_B = i(t);
+                  return ageGroupBArc(d, index);
+                };
+              });
+    
+            ageGroupCSegments
+              .transition("ageGroupCSegmentDataUpdate")
+              .ease(d3.easeLinear)
+              .duration(500)
+              .delay(function(d, i) {
+                return (12 - i) * 100;
+              })
+              .attrTween("d", function(d, index) {
+                if (d[globalYear].total === 0) {
+                  d[globalYear]["0-30_percentage"] = 0;
+                  d[globalYear]["31-40_percentage"] = 0;
+                  d[globalYear]["41-50_percentage"] = 0;
+                } else {
+                  d[globalYear]["31-40_percentage"] =
+                    d[globalYear][age_split[1].name] / d[globalYear].total;
+                  d[globalYear]["0-30_percentage"] =
+                    d[globalYear][age_split[0].name] / d[globalYear].total;
+                  d[globalYear]["41-50_percentage"] =
+                    d[globalYear][age_split[2].name] / d[globalYear].total;
+                }
+                if (mode === "age groups") {
+                  var i = d3.interpolate(
+                    d.outerRadius_C,
+                    barScale(
+                      d[globalYear]["0-30_percentage"] +
+                        d[globalYear]["31-40_percentage"] +
+                        d[globalYear]["41-50_percentage"]
+                    )
+                  );
+                } else {
+                  var i = d3.interpolate(d.outerRadius_C, barScale(0));
+                }
+                return function(t) {
+                  d.outerRadius_C = i(t);
+                  return ageGroupCArc(d, index);
+                };
+              });
+    
+            ageGroupDSegments
+              .transition("ageGroupDSegmentDataUpdate")
+              .ease(d3.easeLinear)
+              .duration(500)
+              .delay(function(d, i) {
+                return (12 - i) * 100;
+              })
+              .attrTween("d", function(d, index) {
+                if (d[globalYear].total === 0) {
+                  d[globalYear]["0-30_percentage"] = 0;
+                  d[globalYear]["31-40_percentage"] = 0;
+                  d[globalYear]["41-50_percentage"] = 0;
+                  d[globalYear]["51+_percentage"] = 0;
+                } else {
+                  d[globalYear]["31-40_percentage"] =
+                    d[globalYear][age_split[1].name] / d[globalYear].total;
+                  d[globalYear]["0-30_percentage"] =
+                    d[globalYear][age_split[0].name] / d[globalYear].total;
+                  d[globalYear]["41-50_percentage"] =
+                    d[globalYear][age_split[2].name] / d[globalYear].total;
+                  d[globalYear]["51+_percentage"] =
+                    d[globalYear][age_split[3].name] / d[globalYear].total;
+                }
+                if (mode === "age groups") {
+                  var i = d3.interpolate(
+                    d.outerRadius_D,
+                    barScale(
+                      d[globalYear]["0-30_percentage"] +
+                        d[globalYear]["31-40_percentage"] +
+                        d[globalYear]["41-50_percentage"] +
+                        d[globalYear]["51+_percentage"]
+                    )
+                  );
+                } else {
+                  var i = d3.interpolate(d.outerRadius_D, barScale(0));
+                }
+                return function(t) {
+                  d.outerRadius_D = i(t);
+                  return ageGroupDArc(d, index);
+                };
+              });
+    
+            // for all modes:
+            hoverSegments
+              .transition("hoverSegmentHasDataUpdate")
+              .duration(1500)
+              .style("fill-opacity", function(d) {
+                if (d[globalYear].total === 0) {
+                  d.hasData = false;
+                } else {
+                  d.hasData = true;
+                }
+                if (d.hasData === false) {
+                  return 1;
+                } else {
+                  return 0;
+                }
+              });
+    
+            yearTitle
+              .transition("titleUpdate")
+              .duration(1000)
+              .delay(100)
+              .text(function() {
+                return globalYear;
+              });
+          }
+    
+          function update_chart_type() {
+            console.log("mode", mode);
+            if (mode === "women") {
+              charTitle.text("Women in");
+              d3.select("#slider-svg").style(
+                "transform",
+                "translate(" +
+                  initialWidth / 2 +
+                  "px," +
+                  (tmp_barHeight * 2 + 150) +
+                  "px)"
+              );
+              legend.attr("transform", function(d, i) {
+                var height = legendRectSize + legendSpacing;
+                var offset = (-height * results.length) / 2;
+                var horz = i * height + offset;
+                var vert = 300;
+                return "translate(" + horz + "," + vert + ")";
+              });
+              d3.select("#threshold-svg").style("display", "none");
+              d3.select("#age-group-key-container").style("display", "none");
+            }
+            if (mode === "youth") {
+              charTitle.text("Youth in");
+              d3.select("#slider-svg").style(
+                "transform",
+                "translate(" +
+                  initialWidth / 2 +
+                  "px," +
+                  (tmp_barHeight * 2 + 130) +
+                  "px)"
+              );
+              legend.attr("transform", function(d, i) {
+                var height = legendRectSize + legendSpacing;
+                var offset = (-height * results.length) / 2;
+                var horz = i * height + offset;
+                var vert = 290;
+                return "translate(" + horz + "," + vert + ")";
+              });
+              d3.select("#threshold-svg").style("display", "");
+              d3.select("#age-group-key-container").style("display", "none");
+            }
+            if (mode === "age groups") {
+              charTitle.text("Age Groups in");
+              d3.select("#slider-svg").style(
+                "transform",
+                "translate(" +
+                  initialWidth / 2 +
+                  "px," +
+                  (tmp_barHeight * 2 + 150) +
+                  "px)"
+              );
+              legend.attr("transform", function(d, i) {
+                var height = legendRectSize + legendSpacing;
+                var offset = (-height * results.length) / 2;
+                var horz = i * height + offset;
+                var vert = 300;
+                return "translate(" + horz + "," + vert + ")";
+              });
+              d3.select("#threshold-svg").style("display", "none");
+              d3.select("#age-group-key-container").style("display", "");
+            }
+            update_year(globalYear);
+          }
+    
+          function segmentMouseOver(d, i) {
+            d3.select(this)
+              .style("cursor", "pointer")
+              .style("stroke", "FFEE00")
+              .style("stroke-width", 1.5);
+    
+            if (mode !== "age groups") {
+              var dummyText = chart
+                .append("text")
+                .attr("id", "segment-mouse-over-dummy-text")
+                .attr("class", "segment-mouse-over")
+                .attr("x", function() {
+                  var centroidX = hoverArc.centroid(d)[0];
+                  return centroidX;
+                })
+                .attr("y", function() {
+                  var centroidY = hoverArc.centroid(d)[1];
+                  return centroidY;
+                })
+                .attr("font-size", function() {
+                  if (d.hasData === true) {
+                    return 12;
+                  } else {
+                    return 10;
+                  }
+                })
+                .attr("fill-opacity", 0)
+                .html(function() {
+                  if (mode === "women") {
+                    var value = Math.round(
+                      (d[globalYear].women * 100) / d[globalYear].total
+                    );
+                  }
+                  if (mode === "youth") {
+                    var value = Math.round(
+                      (d[globalYear][age_threshold] * 100) / d[globalYear].total
+                    );
+                  }
+                  var x = d3.select(this).attr("x");
+                  if (d.hasData === true) {
+                    var toolLine1 =
+                      "<tspan x=" +
+                      x +
+                      " dy='0.4em' class='toolHeader'>" +
+                      value +
+                      "% </tspan>";
+                    return toolLine1;
+                  } else {
+                    toolLine1 =
+                      "<tspan x=" +
+                      x +
+                      " dy='-0.1em' class='toolHeader'>No</tspan>";
+                    toolLine2 =
+                      "<tspan x=" + x + " dy='1em' class='toolHeader'>Data</tspan>";
+                    return toolLine1 + toolLine2;
+                  }
+                });
+    
+              var toolBox = chart
+                .append("circle")
+                .attr("cx", function() {
+                  var centroidX = hoverArc.centroid(d)[0];
+                  return centroidX;
+                })
+                .attr("cy", function() {
+                  var centroidY = hoverArc.centroid(d)[1];
+                  return centroidY;
+                })
+                .attr("r", function() {
+                  if (d.hasData === true) {
+                    return (
+                      (dummyText.node().getBoundingClientRect().width * 2) / 3 + 3
+                    );
+                  } else {
+                    return 20;
+                  }
+                })
+                .attr("id", "segment-mouse-over-rect")
+                .attr("class", "segment-mouse-over")
+                .style("fill", "white")
+                .style("stroke", "FFEE00")
+                .style("stroke-width", 3)
+                .style("opacity", 1);
+    
+              var toolText = chart
+                .append("text")
+                .attr("id", "segment-mouse-over-tool-text")
+                .attr("class", "segment-mouse-over")
+                .attr("x", function() {
+                  var centroidX = hoverArc.centroid(d)[0];
+                  return centroidX;
+                })
+                .attr("y", function() {
+                  var centroidY = hoverArc.centroid(d)[1];
+                  return centroidY;
+                })
+                .attr("font-size", function() {
+                  if (d.hasData === true) {
+                    return 12;
+                  } else {
+                    return 10;
+                  }
+                })
+                .attr("fill-opacity", 1)
+                .html(function() {
+                  if (mode === "women") {
+                    var value = Math.round(
+                      (d[globalYear].women * 100) / d[globalYear].total
+                    );
+                  }
+                  if (mode === "youth") {
+                    var value = Math.round(
+                      (d[globalYear][age_threshold] * 100) / d[globalYear].total
+                    );
+                  }
+                  var x = d3.select(this).attr("x");
+                  if (d.hasData === true) {
+                    var toolLine1 =
+                      "<tspan x=" +
+                      x +
+                      " dy='0.4em' class='toolHeader'>" +
+                      value +
+                      "% </tspan>";
+                    return toolLine1;
+                  } else {
+                    toolLine1 =
+                      "<tspan x=" +
+                      x +
+                      " dy='-0.1em' class='toolHeader'>No</tspan>";
+                    toolLine2 =
+                      "<tspan x=" + x + " dy='1em' class='toolHeader'>Data</tspan>";
+                    return toolLine1 + toolLine2;
+                  }
+                });
+            } else {
+              if (d.hasData === true) {
+                d3.select(".key-a").text(function() {
+                  return Math.round(d[globalYear][age_split[0].name]) + "%";
+                });
+                d3.select(".key-b").text(function() {
+                  return Math.round(d[globalYear][age_split[1].name]) + "%";
+                });
+                d3.select(".key-c").text(function() {
+                  return Math.round(d[globalYear][age_split[2].name]) + "%";
+                });
+                d3.select(".key-d").text(function() {
+                  return Math.round(d[globalYear][age_split[3].name]) + "%";
+                });
+              }
+            }
+          }
+    
+          function segmentMouseOut() {
+            d3.select(this).style("stroke", "none");
+            d3.select(".key-a").text("Ages -30");
+            d3.select(".key-b").text("Ages 31-40");
+            d3.select(".key-c").text("Ages 41-50");
+            d3.select(".key-d").text("Ages 51+");
+            d3.select("#segment-mouse-over-dummy-text").remove();
+            d3.select("#segment-mouse-over-rect").remove();
+            d3.select("#segment-mouse-over-tool-text").remove();
+          }
+    
+          update_year(min_year);
+        });
+    
 
   </script>
 </body>
