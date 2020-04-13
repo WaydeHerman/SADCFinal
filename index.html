@@ -6,6 +6,7 @@
     rel="stylesheet"
     href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
   />
+  <meta property="og:image" content="assets/screen.png">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
   <link rel="icon" href="favicon.ico">
 </head>
@@ -215,7 +216,6 @@ h3 {
 
   .right-footer {
     float: right;
-    width: 6em;
   }
 
     /* 
@@ -388,6 +388,17 @@ h3 {
     pointer-events: none;
   }
 
+  .left-link {
+    float: right;
+    width: 100px;
+  }
+
+  .right-link {
+    float: left;
+    padding-right: 10px;
+    width: 200px;
+  }
+
 
   
 </style>
@@ -470,16 +481,16 @@ h3 {
             <h4 class="font-weight-bold">Share</h4>
             </div>
             <div class="share-container">
-            <a class="twitter" href=https://twitter.com/intent/tweet?text=Hello%20world target="popup">Share on Twitter</a>
-            <a class="facebook" href="x">Share on Facebook</a>
-            <a class="mail" href="mailto:?subject=Have%20you%20seen%20this%20SADC%20data%20viz%3F&body=Have%20a%20look%20at%20this%20awesome%20data%20viz%20by%20the%20SADC%3A%0A%0Awww.awesomedataviz.com">Share on email</a>
+            <a class="twitter" href=https://twitter.com/intent/tweet?text=Have%20a%20look%20at%20%27How%20diverse%20is%20your%20parliament%3F%27%2C%20an%20interactive%20data%20visualisation%20to%20raise%20awareness%20on%20Women%20Advancement%20and%20Youth%20Development%20in%20the%20SADC%20region.%20https%3A%2F%2Fwaydeherman.github.io%2FSADCFinal%2F target="popup">Share on Twitter</a>
+            <a class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwaydeherman.github.io%2FSADCFinal%2F">Share on Facebook</a>
+            <a class="mail" href="mailto:?subject=Have%20you%20seen%20this%20SADC%20data%20viz%3F&body=Have%20a%20look%20at%20%27How%20diverse%20is%20your%20parliament%3F%27%2C%20an%20interactive%20data%20visualisation%20to%20raise%20awareness%20on%20Women%20Advancement%20and%20Youth%20Development%20in%20the%20SADC%20region.%20https%3A%2F%2Fwaydeherman.github.io%2FSADCFinal%2F">Share on email</a>
           </div>
         </div>
           <div class="right-footer">
-            <a href="test.com">
+            <a class="left-link" href="https://www.sadc.int/">
               <img src="assets/SADC PF Logo.jpg" class="img-fluid" alt="Responsive image">
             </a>
-            <a href="test.com/other">
+            <a class="right-link" href="https://www.giz.de/en/html/index.html">
               <img src="assets/German-AU Cooperation logo-Implemented by (1).png" class="img-fluid" alt="Responsive image">
             </a>
             
@@ -521,15 +532,8 @@ h3 {
       ];
   
       var age_thresholds = [30, 35, 40];
-  
-      // set starting global variables:
-      var mode = "women";
-      var age_threshold = age_thresholds[0];
 
-          // colors for each country:
-    var countryColor = d3
-    .scaleOrdinal()
-    .domain([
+      var countryList = [
       "Angola",
       "Botswana",
       "DRC",
@@ -544,7 +548,16 @@ h3 {
       "Tanzania",
       "Zambia",
       "Zimbabwe"
-    ])
+    ]
+  
+      // set starting global variables:
+      var mode = "women";
+      var age_threshold = age_thresholds[0];
+
+          // colors for each country:
+    var countryColor = d3
+    .scaleOrdinal()
+    .domain(countryList)
     .range([
       "#007536",
       "#81AF69",
@@ -757,6 +770,28 @@ h3 {
               }
             });
           });
+
+          var countriesWithData = max_years_per_country.map(function(v) {
+            return v.key
+          })
+
+          countryList.forEach(function(v) {
+            if (countriesWithData.indexOf(v) < 0) {
+              var tmp_object = { country: v};
+              year_range.forEach(function(u) {
+                tmp_object[u] = {};
+                tmp_object[u].women = 0;
+                tmp_object[u].total = 0;
+                age_thresholds.forEach(function(v) {
+                  tmp_object[u][v] = 0;
+                });
+                age_split.forEach(function(o) {
+                  tmp_object[u][o["name"]] = 0;
+                });
+              });
+              results.push(tmp_object)
+            }
+          })
     
           results.forEach(function(d) {
             d.enabled = true;
@@ -773,8 +808,10 @@ h3 {
               return 1;
             }
           });
+
+          
     
-          var numBars = max_years_per_country.length;
+          var numBars = countryList.length;
       
           /*
     
@@ -1893,6 +1930,7 @@ h3 {
     
           function update_chart_type() {
             if (mode === "women") {
+              d3.select("#data-viz").style("padding-top", "5em")
               charTitle.text("Women in");
               d3.select("#slider-svg").style(
                 "transform",
@@ -1913,6 +1951,7 @@ h3 {
               d3.select("#age-group-key-container").style("display", "none");
             }
             if (mode === "youth") {
+              d3.select("#data-viz").style("padding-top", "5em")
               charTitle.text("Youth in");
               d3.select("#slider-svg").style(
                 "transform",
@@ -1933,6 +1972,7 @@ h3 {
               d3.select("#age-group-key-container").style("display", "none");
             }
             if (mode === "age groups") {
+              d3.select("#data-viz").style("padding-top", "1em")
               charTitle.text("Age Groups in");
               d3.select("#slider-svg").style(
                 "transform",
